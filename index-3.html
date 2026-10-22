@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>AZ Light House | Lighting Store</title>
+<style>
+:root{--bg:#f4f6f9;--ink:#172033;--brand:#f5b400;--dark:#111827;--muted:#667085;--card:#fff;--line:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--dark);color:white;padding:18px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 10px #0002}
+.head{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:24px;font-weight:800}.brand span{color:var(--brand)}.sub{font-size:12px;color:#d0d5dd;margin-top:4px}
+button,.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+.primary{background:var(--brand);color:#111827}.darkbtn{background:#263246;color:white}.green{background:#16803d;color:white}.lightbtn{background:#eef2f7;color:#172033}
+.hero{background:linear-gradient(120deg,#111827,#263246);color:white;padding:42px 18px;text-align:center}
+.hero h1{font-size:clamp(28px,5vw,44px);margin:0 0 12px}.hero p{color:#e5e7eb;max-width:650px;margin:0 auto 20px;line-height:1.6}
+.wrap{max-width:1100px;margin:25px auto;padding:0 15px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:8px;font:inherit;background:white}
+.search{flex:1;min-width:180px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 3px 12px #1018280a}
+.photo{height:190px;background:#e9edf3;display:flex;align-items:center;justify-content:center;color:#667085;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover}.info{padding:15px}.info h3{margin:0 0 8px;font-size:18px}.desc{color:var(--muted);font-size:14px;line-height:1.5;min-height:40px}.price{font-size:21px;font-weight:800;margin:12px 0}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}
+.empty{text-align:center;padding:35px 12px;color:var(--muted);background:white;border-radius:12px}
+section h2{margin:0 0 15px}.admin,.orderbox,.reviews{background:white;border:1px solid var(--line);padding:18px;border-radius:14px;margin-top:22px}
+.hidden{display:none!important}.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.field{margin-bottom:12px}.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.small{font-size:12px;color:var(--muted);line-height:1.5}
+footer{text-align:center;padding:25px 15px;background:#111827;color:#e5e7eb;margin-top:35px;line-height:1.7}
+.modalbg{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:15px;z-index:20}
+.modal{background:white;border-radius:14px;padding:22px;max-width:430px;width:100%;position:relative}.close{position:absolute;right:10px;top:10px;background:#eef2f7;padding:7px 11px}
+.notice{padding:10px 12px;background:#fff7d6;border:1px solid #f3d36a;border-radius:9px;color:#5c4700;font-size:13px;margin:10px 0}
+.stars{color:#e5a400;font-size:20px;letter-spacing:2px}
+@media(max-width:520px){.brand{font-size:21px}.hero{padding:32px 15px}.actions button{font-size:12px;padding:10px 8px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><div class="brand">AZ <span>Light House</span></div><div class="sub">Lighting • Shah Alam Market, Lahore</div></div><div class="actions"><a class="btn green" href="https://wa.me/923165606327" target="_blank" rel="noopener">WhatsApp</a><button class="primary" onclick="showAdminLogin()">Admin Login</button></div></div></header>
+<div class="hero"><h1>Brighten Your Space</h1><p>Explore lighting products for your home, shop, office and outdoor spaces. Choose a product and order directly through WhatsApp.</p><a class="btn primary" href="#products">Shop Products</a></div>
+<main class="wrap">
+<section id="products"><h2>Our Products</h2><div class="toolbar"><input id="search" class="search" placeholder="Search products..." oninput="renderProducts()"><select id="sort" onchange="renderProducts()" style="max-width:190px"><option value="default">Sort: Default</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option></select></div><div id="productGrid" class="grid"></div></section>
+<section id="adminPanel" class="admin hidden"><h2>Admin Panel</h2><p class="small">Add or manage products in this browser. This HTML-only version stores products on this device only.</p><div class="formgrid"><div class="field"><label>Product name *</label><input id="pName" placeholder="e.g. 5 Meter RGB Neon Rope Light"></div><div class="field"><label>Price (PKR) *</label><input id="pPrice" type="number" min="0" placeholder="3399"></div><div class="field"><label>Image URL (optional)</label><input id="pImage" placeholder="https://..."></div></div><div class="field"><label>Description</label><textarea id="pDesc" rows="3" placeholder="Write product details..."></textarea></div><div class="actions"><button class="primary" onclick="addProduct()">Add Product</button><button class="lightbtn" onclick="logoutAdmin()">Logout</button></div><p class="small">To remove a product, use the Delete button shown on each product while logged in.</p></section>
+<section id="reviews" class="reviews"><h2>Customer Reviews</h2><div id="reviewList"><p class="small">No reviews yet. You can leave the first review below.</p></div><div class="formgrid"><div class="field"><label>Your name</label><input id="rName" placeholder="Your name"></div><div class="field"><label>Rating</label><select id="rRating"><option value="5">★★★★★ - Excellent</option><option value="4">★★★★ - Very good</option><option value="3">★★★ - Good</option><option value="2">★★ - Fair</option><option value="1">★ - Poor</option></select></div></div><div class="field"><label>Review</label><textarea id="rText" rows="2" placeholder="Write your review..."></textarea></div><button class="darkbtn" onclick="addReview()">Submit Review</button></section>
+<section class="orderbox"><h2>Contact & Orders</h2><p>For product details or orders, contact AZ Light House on WhatsApp.</p><p><strong>Phone:</strong> 0316 5606327<br><strong>Location:</strong> Shah Alam Market, Lahore</p><a class="btn green" href="https://wa.me/923165606327" target="_blank" rel="noopener">Chat on WhatsApp</a></section>
+</main>
+<footer><strong>AZ Light House</strong><br>Shah Alam Market, Lahore<br>WhatsApp: 0316 5606327</footer>
+<div id="welcome" class="modalbg"><div class="modal"><button class="close" onclick="closeWelcome()">×</button><h2>Welcome to AZ Light House</h2><p>Find lighting products for your home, shop and business.</p><button class="primary" onclick="closeWelcome()">Continue Shopping</button></div></div>
+<div id="loginModal" class="modalbg hidden"><div class="modal"><button class="close" onclick="hideAdminLogin()">×</button><h2>Admin Login</h2><p class="small">Set a simple local admin PIN for this browser. This is not secure authentication for a public website.</p><div class="field"><label>Admin PIN</label><input id="adminPin" type="password" placeholder="Enter PIN"></div><button class="primary" onclick="loginAdmin()">Login</button><p id="loginError" class="small"></p></div></div>
+<div id="orderModal" class="modalbg hidden"><div class="modal"><button class="close" onclick="closeOrder()">×</button><h2>Place Your Order</h2><p id="orderProductName"></p><div class="field"><label>Your name *</label><input id="oName" placeholder="Full name"></div><div class="field"><label>Phone number *</label><input id="oPhone" placeholder="03XXXXXXXXX"></div><div class="field"><label>City *</label><input id="oCity" placeholder="Your city"></div><div class="field"><label>Full address *</label><textarea id="oAddress" rows="2" placeholder="House, street, area, city"></textarea></div><div class="field"><label>Quantity</label><input id="oQty" type="number" min="1" value="1"></div><button class="green" onclick="sendOrder()">Send Order on WhatsApp</button></div></div>
+<script>
+const SHOP_PHONE='923165606327';
+const STARTER_PRODUCTS=[
+{id:'sample1',name:'RGB Neon Rope Light - 5 Meter',price:3399,description:'5-meter RGB neon rope light for room, counter and decorative lighting. Please confirm availability before ordering.',image:''},
+{id:'sample2',name:'LED Profile / Outdoor Light',price:0,description:'Lighting solution for indoor or outdoor use. Contact us for current price and availability.',image:''},
+{id:'sample3',name:'Galaxy Projector Night Light',price:0,description:'Decorative projector light for bedrooms and relaxing spaces. Contact us for current price and availability.',image:''}
+];
+let products=load('azlh_products',STARTER_PRODUCTS);
+let reviews=load('azlh_reviews',[]);
+let admin=false,currentOrder=null;
+function load(key,fallback){try{const x=localStorage.getItem(key);return x?JSON.parse(x):fallback}catch(e){return fallback}}
+function save(){localStorage.setItem('azlh_products',JSON.stringify(products))}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderProducts(){
+ const q=(document.getElementById('search').value||'').toLowerCase();
+ let list=products.filter(p=>(p.name+' '+p.description).toLowerCase().includes(q));
+ const sort=document.getElementById('sort').value;
+ if(sort==='low')list.sort((a,b)=>a.price-b.price);if(sort==='high')list.sort((a,b)=>b.price-a.price);
+ const grid=document.getElementById('productGrid');
+ if(!list.length){grid.innerHTML='<div class="empty">No products found.</div>';return}
+ grid.innerHTML=list.map(p=>`<article class="card"><div class="photo">${p.image?`<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'">`:'<span>Product Image</span>'}</div><div class="info"><h3>${escapeHtml(p.name)}</h3><div class="desc">${escapeHtml(p.description||'Contact us for details.')}</div><div class="price">${p.price>0?'Rs. '+Number(p.price).toLocaleString('en-PK'):'Contact for price'}</div><div class="actions"><button class="green" onclick="openOrder('${String(p.id).replace(/'/g,'')}')">Order</button><button class="lightbtn" onclick="askWhatsApp('${escapeHtml(p.name).replace(/'/g,'&#39;')}')">Ask</button>${admin?`<button class="lightbtn" onclick="deleteProduct('${String(p.id).replace(/'/g,'')}')">Delete</button>`:''}</div></div></article>`).join('');
+}
+function showAdminLogin(){document.getElementById('loginModal').classList.remove('hidden');document.getElementById('adminPin').focus()}
+function hideAdminLogin(){document.getElementById('loginModal').classList.add('hidden')}
+function loginAdmin(){
+ const pin=document.getElementById('adminPin').value;
+ let saved=localStorage.getItem('azlh_admin_pin');
+ if(!saved){if(pin.length<4){document.getElementById('loginError').textContent='Choose a PIN with at least 4 characters.';return}localStorage.setItem('azlh_admin_pin',pin);saved=pin;alert('PIN created for this browser. Keep it private.')}
+ if(pin===saved){admin=true;hideAdminLogin();document.getElementById('adminPanel').classList.remove('hidden');renderProducts();document.getElementById('adminPanel').scrollIntoView({behavior:'smooth'})}
+ else document.getElementById('loginError').textContent='Incorrect PIN. Try again.';
+}
+function logoutAdmin(){admin=false;document.getElementById('adminPanel').classList.add('hidden');renderProducts()}
+function addProduct(){
+ const name=document.getElementById('pName').value.trim(),price=Number(document.getElementById('pPrice').value),image=document.getElementById('pImage').value.trim(),description=document.getElementById('pDesc').value.trim();
+ if(!name||document.getElementById('pPrice').value===''){alert('Please enter product name and price.');return}
+ products.unshift({id:'p'+Date.now(),name,price,description,image});save();renderProducts();
+ ['pName','pPrice','pImage','pDesc'].forEach(id=>document.getElementById(id).value='');alert('Product added on this device.');
+}
+function deleteProduct(id){if(!admin)return;if(confirm('Delete this product?')){products=products.filter(p=>String(p.id)!==String(id));save();renderProducts()}}
+function openOrder(id){currentOrder=products.find(p=>String(p.id)===String(id));if(!currentOrder)return;document.getElementById('orderProductName').textContent=currentOrder.name+' — '+(currentOrder.price>0?'Rs. '+Number(currentOrder.price).toLocaleString('en-PK'):'price to confirm');document.getElementById('orderModal').classList.remove('hidden')}
+function closeOrder(){document.getElementById('orderModal').classList.add('hidden')}
+function sendOrder(){
+ const name=document.getElementById('oName').value.trim(),phone=document.getElementById('oPhone').value.trim(),city=document.getElementById('oCity').value.trim(),address=document.getElementById('oAddress').value.trim(),qty=Math.max(1,Number(document.getElementById('oQty').value)||1);
+ if(!name||!phone||!city||!address){alert('Please fill in your name, phone, city and full address.');return}
+ const total=currentOrder.price>0?'Rs. '+(currentOrder.price*qty).toLocaleString('en-PK'):'Please confirm price';
+ const msg=`New Order - AZ Light House%0AProduct: ${encodeURIComponent(currentOrder.name)}%0AQuantity: ${qty}%0AUnit Price: ${encodeURIComponent(currentOrder.price>0?'Rs. '+currentOrder.price:'Confirm price')}%0ATotal: ${encodeURIComponent(total)}%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0ACity: ${encodeURIComponent(city)}%0AAddress: ${encodeURIComponent(address)}`;
+ window.open('https://wa.me/'+SHOP_PHONE+'?text='+msg,'_blank');closeOrder();
+}
+function askWhatsApp(name){window.open('https://wa.me/'+SHOP_PHONE+'?text='+encodeURIComponent('Assalam-o-Alaikum, I want details about: '+name),'_blank')}
+function closeWelcome(){document.getElementById('welcome').classList.add('hidden')}
+function addReview(){
+ const name=document.getElementById('rName').value.trim()||'Customer',rating=Number(document.getElementById('rRating').value),review=document.getElementById('rText').value.trim();
+ if(!review){alert('Please write a review first.');return}
+ reviews.unshift({name,rating,review});localStorage.setItem('azlh_reviews',JSON.stringify(reviews));document.getElementById('rText').value='';renderReviews();
+}
+function renderReviews(){const el=document.getElementById('reviewList');if(!reviews.length){el.innerHTML='<p class="small">No reviews yet. You can leave the first review below.</p>';return}el.innerHTML=reviews.map(r=>`<div style="border-bottom:1px solid #eee;padding:10px 0"><strong>${escapeHtml(r.name)}</strong><div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div><p>${escapeHtml(r.review)}</p></div>`).join('')}
+renderProducts();renderReviews();
+</script>
+</body>
+</html>
